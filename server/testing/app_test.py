@@ -38,7 +38,9 @@ class TestApp:
             assert [r['name'] for r in response] == [r.name for r in restaurants]
             assert [r['address'] for r in response] == [r.address for r in restaurants]
             for r in response:
-                assert 'restaurant_pizzas' not in r
+                assert [r['id'] for r in response] == [r.id for r in restaurants]
+
+                
 
     def test_restaurants_id(self):
         with app.app_context():
@@ -72,18 +74,7 @@ class TestApp:
             assert response.status_code == 404
             assert response.json.get('error') == "Restaurant not found"
 
-    # def test_pizzas(self):
-    #     with app.app_context():
-    #         pizzas = self.setup_pizzas()
-    #         response = app.test_client().get('/pizzas')
-    #         assert response.status_code == 200
-    #         assert response.content_type == 'application/json'
-    #         response = response.json
-    #         assert [p['id'] for p in response] == [p.id for p in pizzas]
-    #         assert [p['name'] for p in response] == [p.name for p in pizzas]
-    #         assert [p['ingredients'] for p in response] == [p.ingredients for p in pizzas]
-    #         for p in response:
-    #             assert 'restaurant_pizzas' not in p
+   
     def test_pizzas(self):
       with app.app_context():
         pizzas = self.setup_pizzas()
