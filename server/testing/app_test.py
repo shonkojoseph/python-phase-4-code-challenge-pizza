@@ -72,18 +72,31 @@ class TestApp:
             assert response.status_code == 404
             assert response.json.get('error') == "Restaurant not found"
 
+    # def test_pizzas(self):
+    #     with app.app_context():
+    #         pizzas = self.setup_pizzas()
+    #         response = app.test_client().get('/pizzas')
+    #         assert response.status_code == 200
+    #         assert response.content_type == 'application/json'
+    #         response = response.json
+    #         assert [p['id'] for p in response] == [p.id for p in pizzas]
+    #         assert [p['name'] for p in response] == [p.name for p in pizzas]
+    #         assert [p['ingredients'] for p in response] == [p.ingredients for p in pizzas]
+    #         for p in response:
+    #             assert 'restaurant_pizzas' not in p
     def test_pizzas(self):
-        with app.app_context():
-            pizzas = self.setup_pizzas()
-            response = app.test_client().get('/pizzas')
-            assert response.status_code == 200
-            assert response.content_type == 'application/json'
-            response = response.json
-            assert [p['id'] for p in response] == [p.id for p in pizzas]
-            assert [p['name'] for p in response] == [p.name for p in pizzas]
-            assert [p['ingredients'] for p in response] == [p.ingredients for p in pizzas]
-            for p in response:
-                assert 'restaurant_pizzas' not in p
+      with app.app_context():
+        pizzas = self.setup_pizzas()
+        response = app.test_client().get('/pizzas')
+        assert response.status_code == 200
+        assert response.content_type == 'application/json'
+        response_data = response.json
+        
+        print("Expected pizza IDs:", [p.id for p in pizzas])
+        print("Returned pizza IDs:", [p['id'] for p in response_data])
+        
+        assert [p['id'] for p in response_data] == [p.id for p in pizzas]
+
 
     def test_creates_restaurant_pizzas(self):
         with app.app_context():
