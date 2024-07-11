@@ -22,16 +22,14 @@ api = Api(app)
 def index():
     return "<h1>Code challenge</h1>"
 
-# Route for getting all restaurants
+
 class RestaurantList(Resource):
     def get(self):
         restaurants = Restaurant.query.all()
-        # turn it to json form
         return [restaurant.to_dict(only=("id", "name", "address")) for restaurant in restaurants], 200
     
 api.add_resource(RestaurantList, '/restaurants')
 
-# Route for getting a specific restaurant by ID
 class RestaurantDetails(Resource):
     def get(self, id):
         with db.session() as session:
@@ -40,7 +38,6 @@ class RestaurantDetails(Resource):
                 return restaurant.to_dict(), 200
             return {"error": "Restaurant not found"}, 404
 
-# Route for deleting a specific restaurant by ID    
     def delete(self, id):
         with db.session() as session:
             restaurant = session.get(Restaurant, id)
@@ -52,7 +49,7 @@ class RestaurantDetails(Resource):
         
 api.add_resource(RestaurantDetails, '/restaurants/<int:id>')        
 
-# Route for getting all pizzas
+
 class PizzaList(Resource):
     def get(self):
         pizzas = Pizza.query.all()
@@ -60,7 +57,7 @@ class PizzaList(Resource):
 
 api.add_resource(PizzaList, '/pizzas')
 
-# Route for getting all Pizzas
+
 class RestaurantPizzaList(Resource):
     def post(self):
         data = request.get_json()
@@ -74,6 +71,9 @@ class RestaurantPizzaList(Resource):
             db.session.commit()
             return new_restaurant_pizza.to_dict(), 201
         except ValueError as e:
+            db.session.rollback()
+            return {"errors": ["validation errors"]}, 400
+        except Exception as e:
             db.session.rollback()
             return {"errors": ["validation errors"]}, 400
 
